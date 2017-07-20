@@ -12,4 +12,4 @@ Requirements:
 create an app, create a bot user, copy your client id and follow this link to allow your bot permission to join your server https://discordapp.com/oauth2/authorize?client_id=[PLACEIDHERE]&scope=bot&permissions=0
 create and copy your user token and place in the bottom of the LuLbot.py file where labbeled
 
-Before using bot: remove the example user from bank.txt,
+Before using bot: remove the example user from bank.txt, the included bat file assumes that the file is located on the desktop, and also requires an input of the username your user account is under. After these have been dealt with, the bot is ready to use.
