@@ -28,6 +28,11 @@ def setConfig():
 	starting_balance=int(settings[2])
 	global break_even
 	break_even=float(settings[3])
+	if settings[4]=="''":
+		print('\n\nPut your token into the config before running your bot, or else it will give scary errors.\n\n')
+		time.sleep(3)
+	else:
+		token=str(settings[4])
 	print('Loaded the following settings from config: ')
 	for i in range(0,len(settings)):
 		print(settings_desc[i]+':\n'+settings[i])
