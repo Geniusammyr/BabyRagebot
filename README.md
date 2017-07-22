@@ -12,6 +12,5 @@ Requirements:
 
 -Discord bot user https://discordapp.com/developers/applications/me
 create an app, create a bot user, copy your client id and follow this link to allow your bot permission to join your server https://discordapp.com/oauth2/authorize?client_id=PLACEIDHERE&scope=bot&permissions=0
-create and copy your user token and place in the bottom of the LuLbot.py file where labeled
 
-run createBat.py, then run the bat file, the bat file can be moved and used outside of the master file
+create and copy your user token from the userbot page, then place it into the config file in bot texts, run createBat.py, then run runLuLbot.bat, the bat file can be moved and used outside of the master file if you wish.
