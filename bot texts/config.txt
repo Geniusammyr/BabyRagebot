@@ -1,0 +1,11 @@
+Bot Prefix:$
+The symbol used before a command to indicate to the bot that you are telling it something
+
+Daily Allowance:25
+Amount given one time per day with the 'balance' command
+
+Starting Balance:100
+Amount of money given to an account when it is created
+
+Points to break even:2.0
+Amount of points that need to be scored to have the user not lose money, the average points per roll is around 2.22
