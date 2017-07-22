@@ -176,4 +176,4 @@ async def LuLbot(ctx,*,user : discord.user=None,aliases=['lulbot']):
 	else:
 		await client.say('Fuck you, '+discord.User.user.mention)
 
-client.run('') #put your client token in the ''
+client.run(token) #put your client token in the ''
