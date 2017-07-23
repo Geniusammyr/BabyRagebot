@@ -63,6 +63,7 @@ async def on_ready():  #displays info on ready
 	print('Name: '+str(client.user.name))
 	print('ID: '+str(client.user.id))
 	print('?')
+	await client.say('Bot Online! Bot prefix is'+bot_prefix)
 
 @client.command(pass_context=True) #text confirmation bot
 async def ping():
