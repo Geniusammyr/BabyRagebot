@@ -35,7 +35,7 @@ def setConfig():
 	else:
 		token=str(settings[4])
 	print('Loaded the following settings from config: ')
-	for i in range(0,len(settings)):
+	for i in range(0,len(settings)-1):
 		print(settings_desc[i]+':\n'+settings[i])
 logging.basicConfig(level=logging.INFO)
 Client = discord.Client()
