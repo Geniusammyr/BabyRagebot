@@ -176,5 +176,10 @@ async def LuLbot(ctx,*,user : discord.user=None,aliases=['lulbot']):
 		await client.say('Fuck You, '+ctx.message.author.mention+'.')
 	else:
 		await client.say('Fuck you, '+discord.User.user.mention)
-
+@client.command(pass_context=True) 
+async def wiki(ctx,*args): #links wikipedia page for given terms
+	search_term=''
+	for i in range(len(args)):
+		search_term+=(args[i]+'_')
+	await client.say('https://en.wikipedia.org/wiki/'+search_term)
 client.run(token) #put your client token in the ''
