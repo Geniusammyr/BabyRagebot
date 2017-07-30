@@ -181,5 +181,5 @@ async def wiki(ctx,*args): #links wikipedia page for given terms
 	search_term=''
 	for i in range(len(args)):
 		search_term+=(args[i]+'_')
-	await client.say('https://en.wikipedia.org/wiki/'+search_term)
+	await client.say('https://en.wikipedia.org/w/index.php?search='+search_term)
 client.run(token) #put your client token in the ''
