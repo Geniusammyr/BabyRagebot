@@ -64,11 +64,8 @@ async def on_ready():  #displays info on ready
 	print("Bot Online!")
 	print('Name: '+str(client.user.name))
 	print('ID: '+str(client.user.id))
-	print('?') 
+	print('?')
 	print(discord.version_info)
-	voiceChannel=client.join_voice_channel('263208278417211393')
-	print(voiceChannel)
-
 
 @client.command(pass_context=True) #text confirmation bot
 async def ping():
