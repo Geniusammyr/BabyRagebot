@@ -170,7 +170,7 @@ async def balance(ctx,freebie:int=0):
 		bankdict[authorString][1]=time.localtime()[7]
 		bankdict[authorString][0]=math.ceil(bankdict[authorString][0])
 		bankWrite(bankdict)
-		await client.say('You haven\'t claimed your daily money_name yet! '+str(daily_allowance)+' '+money_name+' have been added to your account')
+		await client.say('You haven\'t claimed your daily '+money_name+' yet! '+str(daily_allowance)+' '+money_name+' have been added to your account')
 	await client.say(ctx.message.author.mention+', your bank balance is '+str(balance+freebie)+' '+money_name+'.')
 @client.command(pass_context=True)
 async def LuLbot(ctx,*,user : discord.user=None,aliases=['lulbot']):
