@@ -17,7 +17,7 @@ def setConfig():
 		for line in config:
 			try:
 				settings.append((line.split(':')[1])[:-1]) #shaves off \n from output, fix spaghetti later
-				settings_desc.append((line.split(':')[0])) #shaves off \n from output, fix spaghetti later
+				settings_desc.append((line.split(':')[0]))
 			except(IndexError):
 				continue
 	global bot_prefix
@@ -28,12 +28,14 @@ def setConfig():
 	starting_balance=int(settings[2])
 	global break_even
 	break_even=float(settings[3])
+	global money_name
+	money_name=str(settings[4])
 	global token
-	if settings[4]=="''":
+	if settings[5]=="''":
 		print('\n\nPut your token into the config before running your bot, or else it will give scary errors.\n\n')
 		time.sleep(3)
 	else:
-		token=str(settings[4])
+		token=str(settings[5])
 	print('Loaded the following settings from config: ')
 	for i in range(0,len(settings)-1):
 		print(settings_desc[i]+':\n'+settings[i])
@@ -47,7 +49,7 @@ def bankWrite(bankdict): #opens bank.txt for writing
 		bankTxt.write(str(bankdict))
 def bankRead(): #opens bank up for reading
 	banklist = []
-	bankdict=dict()
+	bankdict=dict() 
 	with open(os.path.join(Dir,'bank.txt'),'r') as bankTxt: #read in banktxt to banklist
 		for line in bankTxt:
 			try:
@@ -109,7 +111,7 @@ async def gamble(ctx,bet:float=0.0):
 	bankdict=bankRead() #returns a usable python dictonary 
 	if authorString not in bankdict.keys(): #create a new user in dict if not in dict
 		bankdict.update({authorString:[starting_balance,366]}) #first number in the list is the default amount given to a new account, change as you see fit in the config
-		await client.say('An account has been made for you, try betting again, you start out with 100 dongerinos.')
+		await client.say('An account has been made for you, try betting again, you start out with '+str(starting_balance)+' '+ money_name+'.')
 		bankWrite(bankdict)
 		return None
 	else: 
@@ -118,7 +120,7 @@ async def gamble(ctx,bet:float=0.0):
 		if bet==-1:
 			bet=balance
 			if bet==0: #flavor text for all-in spammers
-				await client.say(ctx.message.author.mention+' R.I.P. dongerinos, I think you\'ve already all-in\'ed enough.')
+				await client.say(ctx.message.author.mention+' R.I.P. '+money_name+', I think you\'ve already all-in\'ed enough.')
 			else:
 				await client.say('It\'s ALL IN boys.')
 		else:
@@ -149,7 +151,7 @@ async def gamble(ctx,bet:float=0.0):
 			score+=1
 	points=math.ceil((score/break_even)*bet) #average score is 2.22, the default value should cause a slight growth in money over time
 	await client.say('>'+display[0]+display[1]+display[2]+'<\n>'+display[3]+display[4]+display[5]+'<\n>'+display[6]+display[7]+display[8]+'<')
-	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s winning item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' dongerinos. You now have '+str(bankdict[authorString][0]+points)+' dongerinos.')
+	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s winning item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' '+money_name+' You now have '+str(bankdict[authorString][0]+points)+' '+money_name+'.')
 	bankdict[authorString][0]+=points
 	bankWrite(bankdict)
 
@@ -168,8 +170,8 @@ async def balance(ctx,freebie:int=0):
 		bankdict[authorString][1]=time.localtime()[7]
 		bankdict[authorString][0]=math.ceil(bankdict[authorString][0])
 		bankWrite(bankdict)
-		await client.say('You haven\'t claimed your daily dongerinos yet! 25 dongerinos have been added to your account')
-	await client.say(ctx.message.author.mention+', your bank balance is '+str(balance+freebie)+' dongerinos.')
+		await client.say('You haven\'t claimed your daily money_name yet! '+str(daily_allowance)+' '+money_name+' have been added to your account')
+	await client.say(ctx.message.author.mention+', your bank balance is '+str(balance+freebie)+money_name+'.')
 @client.command(pass_context=True)
 async def LuLbot(ctx,*,user : discord.user=None,aliases=['lulbot']):
 	if user==None:
@@ -182,4 +184,4 @@ async def wiki(ctx,*args): #links wikipedia page for given terms
 	for i in range(len(args)):
 		search_term+=(args[i]+'_')
 	await client.say('https://en.wikipedia.org/w/index.php?search='+search_term)
-client.run(token) #put your client token in the ''
+client.run(token) #client token
