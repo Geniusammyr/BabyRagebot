@@ -151,7 +151,7 @@ async def gamble(ctx,bet:float=0.0):
 			score+=1
 	points=math.ceil((score/break_even)*bet) #average score is 2.22, the default value should cause a slight growth in money over time
 	await client.say('>'+display[0]+display[1]+display[2]+'<\n>'+display[3]+display[4]+display[5]+'<\n>'+display[6]+display[7]+display[8]+'<')
-	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s winning item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' '+money_name+' You now have '+str(bankdict[authorString][0]+points)+' '+money_name+'.')
+	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s winning item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' '+money_name+'. You now have '+str(bankdict[authorString][0]+points)+' '+money_name+'.')
 	bankdict[authorString][0]+=points
 	bankWrite(bankdict)
 
