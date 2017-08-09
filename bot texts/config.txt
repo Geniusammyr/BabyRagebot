@@ -10,5 +10,8 @@ Amount of money given to an account when it is created
 Points to break even:2.0
 Amount of points that need to be scored to have the user not lose money, the average points per roll is around 2.22
 
+Currency Name:Dongerinos
+Name of the currency the gamble command uses
+
 Bot Token:''
 Token from the discord bot page, replace '' with token for bot to work correctly
