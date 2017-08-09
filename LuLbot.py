@@ -10,6 +10,12 @@ from discord.ext import commands
 
 currentFile=os.path.split(os.path.abspath(__file__))[0]
 Dir=os.path.join(currentFile,'bot texts')
+def rolls_display(rolls_list):
+	rolls_display=''
+	for i in rolls_list:
+		rolls_display+=str(i)+', '
+	rolls_display=rolls_display[:-2]
+	return rolls_display
 def setConfig():
 	settings=[]
 	settings_desc=[]
@@ -184,4 +190,51 @@ async def wiki(ctx,*args): #links wikipedia page for given terms
 	for i in range(len(args)):
 		search_term+=(args[i]+'_')
 	await client.say('https://en.wikipedia.org/w/index.php?search='+search_term)
+@client.command(pass_context=True) 
+async def letter(ctx): #generatre random letter
+	letter_num=random.randint(1,26)
+	letters={1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
+	await client.say(letters[letter_num].upper())
+@client.command(pass_context=True)
+async def dnd(ctx, *args): #borrows idea from roll20
+	rolls_list=[]
+	rolls_total=0
+	args_copy=[]
+	for i in args:
+		args_copy.append(i)
+	for i in range(0,len(args_copy)):
+			try:
+				args_copy[i]=int(args_copy[i])
+			except(TypeError,ValueError):
+				pass
+	global bonus
+	bonus=0
+	try:
+		bonus=args_copy[2]
+	except(IndexError):
+		args_copy.append(0)
+	if type(args_copy[0])==str:
+		if args_copy[0]=='d' or args_copy[0]=='D':
+			for i in range(0,2):
+				rolls_list.append(random.randint(1,args_copy[1]))
+			if rolls_list[0]>rolls_list[1]:
+				rolls_total=rolls_list[1]
+			else:
+				rolls_total=rolls_list[0]
+			await client.say(ctx.message.author.mention+', Your rolls are: '+rolls_display(rolls_list)+', and your final roll is: '+str(rolls_total+bonus))
+				
+		if args_copy[0]=='a' or args_copy[0]=='A':
+			for i in range(0,2):
+				rolls_list.append(random.randint(1,args_copy[1]))
+			if rolls_list[0]<rolls_list[1]:
+				rolls_total=rolls_list[1]
+			else:
+				rolls_total=rolls_list[0]
+			await client.say(ctx.message.author.mention+', Your rolls are: '+rolls_display(rolls_list)+', and your final roll is: '+str(rolls_total+bonus))
+	else:
+		for i in range(0,args_copy[0]):
+			rolls_list.append(random.randint(1,args_copy[1]))
+		for i in rolls_list:
+			rolls_total+=i
+		await client.say(ctx.message.author.mention+', Your rolls are: '+rolls_display(rolls_list)+', and your final roll is: '+str(rolls_total+bonus))
 client.run(token) #client token
