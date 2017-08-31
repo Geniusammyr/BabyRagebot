@@ -4,7 +4,7 @@ meme-based python discord bot
 Requirements:
 -python 3, https://www.python.org/
 
--python file path added to enviroment variables https://stackoverflow.com/questions/3701646/how-to-add-to-the-pythonpath-in-windows-7
+-python file path added to enviroment variables https://superuser.com/questions/143119/how-to-add-python-to-the-windows-path
 
 -download and install discord.py https://github.com/Rapptz/discord.py, download the file, then open cmd and type:
 python -m pip install -U discord.py
