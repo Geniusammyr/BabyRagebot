@@ -280,7 +280,7 @@ async def exp(ctx, *args): #creates an arbitrary levelup system
 			expdict = expRead()
 			expdict[authorString][1] -= (10 * expdict[authorString][0] + 1)
 			expdict[authorString][0] += 1
-			await client.say(ctx.message.author.mention + ', you have leveled up! Your new level is ' + str(expdict[authorString][0]) + ' and you have ' + str(expdict[authorString][1]) + ' exp remaining.')
+			await client.say(ctx.message.author.mention + ', you have leveled up! Your new level is ' + str(expdict[authorString][0]) + ' and you have ' + str(expdict[authorString][1]) + ' exp.')
 			expWrite(expdict)
 	
 
