@@ -9,7 +9,7 @@ Requirements:
 -download and install discord.py https://github.com/Rapptz/discord.py, download the file, then open cmd and type:
 python -m pip install -U discord.py
 
--notepad++ https://notepad-plus-plus.org/ or sublime text https://www.sublimetext.com/ for code editted are highly recommended
+-notepad++ https://notepad-plus-plus.org/ or sublime text https://www.sublimetext.com/ as code editors(for the enclined) are highly recommended
 
 -Create a Discord bot user https://discordapp.com/developers/applications/me
 create an app, create a bot user, copy your client id and follow this link to allow your bot permission to join your server https://discordapp.com/oauth2/authorize?client_id=PLACEIDHERE&scope=bot&permissions=0
