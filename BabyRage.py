@@ -10,12 +10,15 @@ from discord.ext import commands
 
 currentFile=os.path.split(os.path.abspath(__file__))[0]
 Dir=os.path.join(currentFile,'bot texts')
+random.seed(int(str(time.localtime()[3])+str(time.localtime()[4])+str(time.localtime()[5]))) #generates seed for random by smashing together hours/minutes/seconds of the current time
+
 def rolls_display(rolls_list):
 	rolls_display=''
 	for i in rolls_list:
 		rolls_display+=str(i)+', '
 	rolls_display=rolls_display[:-2]
 	return rolls_display
+	
 def setConfig():
 	settings=[]
 	settings_desc=[]
@@ -26,17 +29,12 @@ def setConfig():
 				settings_desc.append((line.split(':')[0]))
 			except(IndexError):
 				continue
-	global bot_prefix
 	bot_prefix=settings[0]
-	global daily_allowance
 	daily_allowance=int(settings[1])
-	global starting_balance
 	starting_balance=int(settings[2])
-	global break_even
 	break_even=float(settings[3])
-	global money_name
 	money_name=str(settings[4])
-	global token
+	token=str(settings[5])
 	if settings[5]=="''":
 		print('\n\nPut your token into the config before running your bot, or else it will give scary errors.\n\n')
 		time.sleep(3)
@@ -45,14 +43,16 @@ def setConfig():
 	print('Loaded the following settings from config: ')
 	for i in range(0,len(settings)-1):
 		print(settings_desc[i]+':\n'+settings[i])
+	return bot_prefix, daily_allowance, starting_balance, break_even, money_name,token
 logging.basicConfig(level=logging.INFO)
 Client = discord.Client()
-setConfig()
+bot_prefix, daily_allowance, starting_balance, break_even, money_name, token = setConfig()
 client = commands.Bot(command_prefix=bot_prefix)
 
 def bankWrite(bankdict): #opens bank.txt for writing
 	with open(os.path.join(Dir,'bank.txt'),'w') as bankTxt:
 		bankTxt.write(str(bankdict))
+		
 def bankRead(): #opens bank up for reading
 	banklist = []
 	bankdict=dict() 
@@ -65,21 +65,38 @@ def bankRead(): #opens bank up for reading
 	for i in range(0,len(banklist)): #convert banklist into bankdict
 		bankdict.update(banklist[i])
 	return bankdict		
+	
+def expRead(): #opens exp up for reading
+	explist = []
+	expdict=dict() 
+	with open(os.path.join(Dir,'exp.txt'),'r') as expTxt: #read in banktxt to banklist
+		for line in expTxt:
+			try:
+				explist.append(eval(line))
+			except (NameError,KeyError):
+				pass
+	for i in range(0,len(explist)): #convert explist into expdict
+		expdict.update(explist[i])
+	return expdict	
+	
+def expWrite(expdict): #opens exp.txt for writing
+	with open(os.path.join(Dir,'exp.txt'),'w') as expTxt:
+		expTxt.write(str(expdict))
 @client.event
 async def on_ready():  #displays info on ready
-	print("Bot Online!")
 	print(discord.version_info)
-	print('Name: '+str(client.user.name))
-	print('ID: '+str(client.user.id))
-	print('?')
+	print('Bot ID: '+str(client.user.id))
+	print("Bot Online!")
 	
 
 @client.command(pass_context=True) #text confirmation bot
 async def ping():
 	await client.say("Pong!")
+	
 @client.command(pass_context=True)
 async def pong():
 	await client.say('Ping!')
+	
 @client.command(pass_context=True)
 async def pasta(): #displays random pasta from file, pastas are on their own individual line in the txt file
 	my_file=open(os.path.join(Dir,'pasta.txt'),'r')
@@ -89,6 +106,7 @@ async def pasta(): #displays random pasta from file, pastas are on their own ind
 	n=random.randint(0,(len(lenFinder)-1))
 	text=lenFinder[n]
 	await client.say(text)
+	
 @client.command(pass_context=True)
 async def flip():   #flips a 'coin'
 	coin=random.randint(0,1)
@@ -96,19 +114,23 @@ async def flip():   #flips a 'coin'
 		await client.say('FluffyTail')
 	if coin==1:
 		await client.say('4Head')
+		
 @client.command(pass_context=True)
 async def roll(self, number: int): #simple display of randint rolling
 	await client.say('Rolling between 0 and '+str(number)+'.')
 	rolled=random.randint(0,number)
 	await client.say(str(rolled))
+	
 @client.command(pass_context=True)
 async def rollz(self, number1:int,number2:int): #simple display of randint rolling, with both parameters being optional
 	await client.say('Rolling between '+str(number1)+' and '+str(number2)+'.')
 	rolled=random.randint(number1,number2)
 	await client.say(str(rolled))
+	
 @client.command(pass_context=True)
 async def helpplz():  #shitty patch for my lack of understanding of adding to the native help command
 		await client.say('Bot prefix is: '+bot_prefix+'\n\n'+'$ping: Pong! \n\n$ping: Ping!\n\n$pasta: Serve up some spicy copypasta\n\n$flip: Flip a coin.\n\n$roll: Roll from 0 to an inputted number\n\n$rollz: Roll between your two inputted numbers')
+		
 @client.command(pass_context=True)
 async def gamble(ctx,bet:float=0.0): 
 	authorString=str(ctx.message.author)
@@ -179,25 +201,22 @@ async def balance(ctx,freebie:int=0):
 		bankWrite(bankdict)
 		await client.say('You haven\'t claimed your daily '+money_name+' yet! '+str(daily_allowance)+' '+money_name+' have been added to your account')
 	await client.say(ctx.message.author.mention+', your bank balance is '+str(balance+freebie)+' '+money_name+'.')
-@client.command(pass_context=True)
-async def LuLbot(ctx,*,user : discord.user=None,aliases=['lulbot']):
-	if user==None:
-		await client.say('Fuck You, '+ctx.message.author.mention+'.')
-	else:
-		await client.say('Fuck you, '+discord.User.user.mention)
+		
 @client.command(pass_context=True) 
 async def wiki(ctx,*args): #links wikipedia page for given terms
 	search_term=''
 	for i in range(len(args)):
 		search_term+=(args[i]+'_')
 	await client.say('https://en.wikipedia.org/w/index.php?search='+search_term)
+	
 @client.command(pass_context=True) 
 async def letter(ctx): #generatre random letter
 	letter_num=random.randint(1,26)
 	letters={1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
 	await client.say(letters[letter_num].upper())
+	
 @client.command(pass_context=True)
-async def dnd(ctx, *args): #borrows idea from roll20
+async def dnd(ctx, *args): #"borrows" idea from roll20
 	rolls_list=[]
 	rolls_total=0
 	args_copy=[]
@@ -238,4 +257,32 @@ async def dnd(ctx, *args): #borrows idea from roll20
 		for i in rolls_list:
 			rolls_total+=i
 		await client.say(ctx.message.author.mention+', Your rolls are: '+rolls_display(rolls_list)+', and your final roll is: '+str(rolls_total+bonus))
+		
+@client.command(pass_context=True)
+async def exp(ctx, *args): #creates an arbitrary levelup system
+	authorString = str(ctx.message.author)
+	expdict = expRead()
+	if authorString not in expdict.keys(): #create a new user in dict if not in dict
+		expdict.update({authorString:[1,0,366]})
+		await client.say(ctx.message.author.mention+', a new account has been made for your power level, try again')
+		expWrite(expdict)
+		return None
+	else: 
+		if expdict[authorString][2] != time.localtime()[7]:
+			expdict[authorString][2]=time.localtime()[7]
+			added_exp = random.randint(1,100)
+			await client.say(ctx.message.author.mention + ', you have gained ' + str(added_exp) + ' exp for today.')
+			expdict[authorString][1] += added_exp
+			expWrite(expdict)
+		else:
+			await client.say(ctx.message.author.mention + ', Your level is ' + str(expdict[authorString][0]) + ' and you have ' + str(expdict[authorString][1]) + ' exp.')
+		while (10 * expdict[authorString][0] +1) < expdict[authorString][1]:
+			expdict = expRead()
+			expdict[authorString][1] -= (10 * expdict[authorString][0] + 1)
+			expdict[authorString][0] += 1
+			await client.say(ctx.message.author.mention + ', you have leveled up! Your new level is ' + str(expdict[authorString][0]) + ' and you have ' + str(expdict[authorString][1]) + ' exp remaining.')
+			expWrite(expdict)
+	
+
 client.run(token) #client token
+
