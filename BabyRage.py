@@ -227,7 +227,6 @@ async def dnd(ctx, *args): #"borrows" idea from roll20
 				args_copy[i]=int(args_copy[i])
 			except(TypeError,ValueError):
 				pass
-	global bonus
 	bonus=0
 	try:
 		bonus=args_copy[2]
