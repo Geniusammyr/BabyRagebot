@@ -89,16 +89,25 @@ async def on_ready():  #displays info on ready
 	print("Bot Online!")
 	
 
-@client.command(pass_context=True) #text confirmation bot
+@client.command(pass_context=True)
 async def ping():
+	'''
+	Used to test if bot is responding
+	'''
 	await client.say("Pong!")
 	
 @client.command(pass_context=True)
 async def pong():
+	'''
+	Used to test if bot is responding
+	'''
 	await client.say('Ping!')
 	
 @client.command(pass_context=True)
 async def pasta(): #displays random pasta from file, pastas are on their own individual line in the txt file
+	'''
+	Displays high quality copypasta served fresh from the pasta.txt file
+	'''
 	my_file=open(os.path.join(Dir,'pasta.txt'),'r')
 	lenFinder=[]
 	for i in my_file.readlines():
@@ -109,6 +118,9 @@ async def pasta(): #displays random pasta from file, pastas are on their own ind
 	
 @client.command(pass_context=True)
 async def flip():   #flips a 'coin'
+	'''
+	Filp a coin
+	'''
 	coin=random.randint(0,1)
 	if coin==0:
 		await client.say('FluffyTail')
@@ -117,22 +129,26 @@ async def flip():   #flips a 'coin'
 		
 @client.command(pass_context=True)
 async def roll(self, number: int): #simple display of randint rolling
-	await client.say('Rolling between 0 and '+str(number)+'.')
+	'''
+	Roll a number between 0 and your inputted number Ex: (command)roll 20
+	'''
 	rolled=random.randint(0,number)
-	await client.say(str(rolled))
+	await client.say("You rolled a "+str(rolled))
 	
 @client.command(pass_context=True)
 async def rollz(self, number1:int,number2:int): #simple display of randint rolling, with both parameters being optional
+	'''
+	Roll between two numbers Ex: (command)rollz 1 10
+	'''
 	await client.say('Rolling between '+str(number1)+' and '+str(number2)+'.')
 	rolled=random.randint(number1,number2)
 	await client.say(str(rolled))
-	
-@client.command(pass_context=True)
-async def helpplz():  #shitty patch for my lack of understanding of adding to the native help command
-		await client.say('Bot prefix is: '+bot_prefix+'\n\n'+'$ping: Pong! \n\n$ping: Ping!\n\n$pasta: Serve up some spicy copypasta\n\n$flip: Flip a coin.\n\n$roll: Roll from 0 to an inputted number\n\n$rollz: Roll between your two inputted numbers')
-		
+			
 @client.command(pass_context=True)
 async def gamble(ctx,bet:float=0.0): 
+	'''
+	Gamble an amount of money (command)gamble 20, -1 for ALL-IN
+	'''
 	authorString=str(ctx.message.author)
 	display=[]
 	emotes=open(os.path.join(Dir,'emotes.txt'),'r') #loads the contents of the emotes.txt file into the gamble function
@@ -180,12 +196,15 @@ async def gamble(ctx,bet:float=0.0):
 			score+=1
 	points=math.ceil((score/break_even)*bet) #average score is 2.22, the default value should cause a slight growth in money over time
 	await client.say('>'+display[0]+display[1]+display[2]+'<\n>'+display[3]+display[4]+display[5]+'<\n>'+display[6]+display[7]+display[8]+'<')
-	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s winning item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' '+money_name+'. You now have '+str(bankdict[authorString][0]+points)+' '+money_name+'.')
+	await client.say(ctx.message.author.mention+', your score is '+str(score)+'. Today\'s bonus item is '+listt[time.localtime()[6]]+'. That means that you win '+str(points)+' '+money_name+'. You now have '+str(bankdict[authorString][0]+points)+' '+money_name+'.')
 	bankdict[authorString][0]+=points
 	bankWrite(bankdict)
 
 @client.command(pass_context=True)
 async def balance(ctx,freebie:int=0):
+	'''
+	Check your gambling account balance (command)balance
+	'''
 	authorString=str(ctx.message.author)
 	bankdict=bankRead()
 	try:
@@ -204,19 +223,28 @@ async def balance(ctx,freebie:int=0):
 		
 @client.command(pass_context=True) 
 async def wiki(ctx,*args): #links wikipedia page for given terms
+	'''
+	Search wikipedia for the keywords provided (command)wiki keywords
+	'''
 	search_term=''
 	for i in range(len(args)):
 		search_term+=(args[i]+'_')
 	await client.say('https://en.wikipedia.org/w/index.php?search='+search_term)
 	
 @client.command(pass_context=True) 
-async def letter(ctx): #generatre random letter
+async def letter(ctx):
+	'''
+	Generate random letter a-z
+	'''
 	letter_num=random.randint(1,26)
 	letters={1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
 	await client.say(letters[letter_num].upper())
 	
 @client.command(pass_context=True)
 async def dnd(ctx, *args): #"borrows" idea from roll20
+	'''
+	Advanced dice roller (command)dnd a/d/number die_number modifier
+	'''
 	rolls_list=[]
 	rolls_total=0
 	args_copy=[]
@@ -227,6 +255,7 @@ async def dnd(ctx, *args): #"borrows" idea from roll20
 				args_copy[i]=int(args_copy[i])
 			except(TypeError,ValueError):
 				pass
+	global bonus
 	bonus=0
 	try:
 		bonus=args_copy[2]
@@ -258,7 +287,10 @@ async def dnd(ctx, *args): #"borrows" idea from roll20
 		await client.say(ctx.message.author.mention+', Your rolls are: '+rolls_display(rolls_list)+', and your final roll is: '+str(rolls_total+bonus))
 		
 @client.command(pass_context=True)
-async def exp(ctx, *args): #creates an arbitrary levelup system
+async def exp(ctx, *args):
+	'''
+	Gives daily exp and keeps track of arbitray levels
+	'''
 	authorString = str(ctx.message.author)
 	expdict = expRead()
 	if authorString not in expdict.keys(): #create a new user in dict if not in dict
