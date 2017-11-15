@@ -2,6 +2,7 @@
 meme-based python discord bot
 
 Requirements:
+
 -python 3, https://www.python.org/
 
 -python file path added to enviroment variables https://superuser.com/questions/143119/how-to-add-python-to-the-windows-path
