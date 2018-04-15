@@ -12,14 +12,17 @@ from discord.ext import commands
 
 currentFileName = os.path.split(os.path.abspath(__file__))[0]
 botTextsDir = os.path.join(currentFileName,'bot texts')
-random.seed(int(str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5])))
 #generates seed for random by smashing together hours/minutes/seconds of the current time
-
-#construct a string, uses a list passed in from the dnd function
+random.seed(int(str(time.localtime()[3]) + str(time.localtime()[4]) + str(time.localtime()[5])))
+      
+def makeBottyString(originalString):
+        return ("```" + originalString + "```")
+     
+ #construct a string, uses a list passed in from the dnd function
 def rollsDisplay(rollsList):
-    rollsDisplay=''
+    rollsDisplay = ''
     for i in rollsList:
-        rollsDisplay + =str(i) + ', '
+        rollsDisplay  += str(i) + ', '
     rollsDisplay = rollsDisplay[:-2]
     return rollsDisplay
 
@@ -35,13 +38,15 @@ def setConfig():
                 settingsDesc.append((line.split(':')[0]))
             except(IndexError):
                 continue
+                
     botPrefix = settings[0]
     dailyAllowance = int(settings[1])
     startingBalance = int(settings[2])
     breakEven = float(settings[3])
     moneyName = str(settings[4])
     botToken = str(settings[5])
-    if settings[5]=="''":
+    
+    if settings[5] == "''":
         print('\n\nPut your bot token into the config before running your bot, or else it will give scary errors.\n\n')
         time.sleep(3)
     else:
@@ -52,9 +57,9 @@ def setConfig():
     print("")
     return botPrefix, dailyAllowance, startingBalance, breakEven, moneyName, botToken
 
-botPrefix, dailyAllowance, startingBalance, breakEven, moneyName, botToken  =  setConfig()
-Client  =  discord.Client() #often called bot in api and examples
-client  =  commands.Bot(command_prefix = botPrefix) #used when referencing discord.Client commands in api
+botPrefix, dailyAllowance, startingBalance, breakEven, moneyName, botToken = setConfig()
+Client = discord.Client() #often called bot in api and examples
+client = commands.Bot(command_prefix = botPrefix) #used when referencing discord.Client commands in api
 logging.basicConfig(level = logging.INFO)
 
 
@@ -66,25 +71,27 @@ def dictWrite(setdict,filename):
 
 #opens up a txt file in read mode, name prodivded in args        
 def dictRead(filename):
-    setList  =  []
+    setList = []
     setdict = dict() 
+    
     with open(os.path.join(botTextsDir,filename + '.txt'),'r') as setTxt: #read in banktxt to banklist
         for line in setTxt:
             try:
                 setList.append(eval(line))
             except (NameError,KeyError):
                 pass
+                
     for i in range(0,len(setList)): #convert banklist into bankDict
         setdict.update(setList[i])
-    return setdict        
-    
+    return setdict 
+
     
 #displays message when bot becomes usable
 @client.event
 async def on_ready():  
-    print(discord.version_info)
+    print(string(discord.version_info))
     print('Bot ID: ' + str(client.user.id))
-    print("Bot Online!")
+    print("Bot Online!```")
     
 
 
@@ -93,7 +100,7 @@ async def ping():
     '''
     Used to test if bot is responding
     '''
-    await client.say("Pong!")
+    await client.say(makeBottyString("Pong!"))
     
     
     
@@ -102,7 +109,7 @@ async def pong():
     '''
     Used to test if bot is responding
     '''
-    await client.say('Ping!')
+    await client.say(makeBottyString("Ping!"))
     
     
 #displays random string from file, strings are on their own individual lines in the pasta.txt file
@@ -128,9 +135,9 @@ async def flip():   #flips a 'coin'
     '''
     coinrandom.randint(0,1)
     if coin == 0:
-        await client.say('FluffyTail')
+        await client.say(makeBottyString('Tails'))
     if coin == 1:
-        await client.say('4Head')
+        await client.say(makeBottyString('Heads'))
     
 
 #roll from 0 to number in args
@@ -140,8 +147,19 @@ async def roll(self, number: int): #simple display of randint rolling
     Roll a number between 0 and your inputted number Ex: (command)roll 20
     '''
     rolled = random.randint(0, number)
-    await client.say("You rolled a " + str(rolled))
+    await client.say(makeBottyString("You rolled a " + str(rolled)))
     
+#todo remove
+@client.command(pass_context = True)
+async def fortNite(self): #simple display of randint rolling
+    '''
+    Roll a number between 0 and your inputted number Ex: (command)roll 20
+    '''
+    rolled = random.randint(1, 10)
+    letter = random.randint(65,74)
+ 
+    await client.say(makeBottyString("You rolled a " + str(rolled) + " and " + str(chr(letter))))
+
     
 #roll a random number between arg1 and arg2
 @client.command(pass_context = True)
@@ -149,9 +167,8 @@ async def rollz(self, number1:int,number2:int):
     '''
     Roll between two numbers Ex: (command)rollz 1 10
     '''
-    await client.say('Rolling between ' + str(number1) + ' and ' + str(number2) + '.')
     rolled = random.randint(number1,number2)
-    await client.say(str(rolled))
+    await client.say(makeBottyString('Rolling between ' + str(number1) + ' and ' + str(number2) + '.\n' + str(rolled)))
         
 
 #gamble an amount on a simulated slot machine
@@ -167,8 +184,8 @@ async def gamble(ctx,bet:float = 0.0):
     bankDict = dictRead("bank") #returns a usable python dictonary 
     if authorString not in bankDict.keys(): #create a new user in dict if not in dict
         bankDict.update({authorString:[startingBalance,366]}) 
-        await client.say('An account has been made for you, try betting again, you start out with ' + str(startingBalance)
-        + ' ' +  moneyName + '.')
+        await client.say(makeBottyString('An account has been made for you, try betting again, you start out with ' + str(startingBalance)
+        + ' ' +  moneyName + '.'))
         dictWrite(bankDict,"bank")
         return None
     else: 
@@ -180,34 +197,34 @@ async def gamble(ctx,bet:float = 0.0):
                 await client.say(ctx.message.author.mention + ' R.I.P. ' + moneyName + ', I think you\'ve already all-in\'ed enough.')
                 return
             else:
-                await client.say('It\'s ALL IN boys!')
+                await client.say(makeBottyString('It\'s ALL IN boys!'))
         else:
-            await client.say('NO! (only positive numbers or -1 are valid bets)')
+            await client.say(makeBottyString('NO! (only positive numbers or -1 are valid bets)'))
             return None
     elif bet == 0.0:
-        await client.say('You can bet nothing, but you can\'t win any money that way!')
+        await client.say(makeBottyString('You can bet nothing, but you can\'t win any money that way!'))
     elif bet > balance:
-        await client.say('You can\'t bet more money than you have!')
+        await client.say(makeBottyString('You can\'t bet more money than you have!'))
         return None
     bet = int(bet) #sanitize(poorly) user input, then deduct bet from account
-    bankDict[authorString][0]-=bet
+    bankDict[authorString][0] -= bet
     for i in range(0,9): #load up lottery images
         display.append(emotesList[random.randint(0,len(emotesList)-1)])
     score = 0
     if display[0] == display[1] == display[2]:
-        score  + = 10            
+        score += 10            
     if display[3] == display[4] == display[5]:
-        score  + = 10            
+        score += 10            
     if display[6] == display[7] == display[8]:
-        score  + = 10
+        score += 10
     if display[0] == display[4] == display[8]:
-        score  + = 10
+        score += 10
     if display[6] == display[4] == display[2]:
-        score  + = 10
+        score += 10
     for i in range(0,9):
         if display[i] == emotesList[time.localtime()[6]]:
-            score  + = 1
-    points = math.ceil((score/breakEven)*bet) #average score is 2.22, the default value should cause a slight growth in money over time
+            score += 1
+    points = math.ceil((score / breakEven) * bet) #average score is 2.22, the default value should cause a slight growth in money over time
 
     await client.say('>' + display[0] + display[1] + display[2] + '<\n>' + display[3] + display[4] + display[5] + '<\n>'
     + display[6] + display[7] + display[8] + '<')
@@ -216,7 +233,7 @@ async def gamble(ctx,bet:float = 0.0):
     + emotesList[time.localtime()[6]] + '. That means that you win ' + str(points) + ' ' + moneyName + '. You now have '
     + str(bankDict[authorString][0] + points) + ' ' + moneyName + '.')
     
-    bankDict[authorString][0]  + = points
+    bankDict[authorString][0] += points
     dictWrite(bankDict,"bank")
 
     
@@ -231,16 +248,16 @@ async def balance(ctx,freebie:int = 0):
     try:
         balance = bankDict[authorString][0]
     except(KeyError):
-        await client.say(ctx.message.author.mention + ', try using the gamble command to make an account first.')
+        await client.say(makeBottyString(ctx.message.author.mention + ', try using the gamble command to make an account first.'))
         return None
     if bankDict[authorString][1] != time.localtime()[7]:
         freebie = dailyAllowance #This is the number added daily, change as you see fit for balance in the config
-        bankDict[authorString][0]  + = freebie
+        bankDict[authorString][0] += freebie
         bankDict[authorString][1] = time.localtime()[7]
         bankDict[authorString][0] = math.ceil(bankDict[authorString][0])
         dictWrite(bankDict,"bank")
-        await client.say('You haven\'t claimed your daily ' + moneyName + ' yet! ' + str(dailyAllowance) + ' ' + moneyName
-        + ' have been added to your account')
+        await client.say(makeBottyString('You haven\'t claimed your daily ' + moneyName + ' yet! ' + str(dailyAllowance) + ' ' + moneyName
+        + ' have been added to your account'))
     await client.say(ctx.message.author.mention + ', your bank balance is ' + str(balance + freebie) + ' ' + moneyName + '.')
         
         
@@ -252,7 +269,7 @@ async def wiki(ctx,*args):
     '''
     search_term = ''
     for i in range(len(args)):
-        search_term  + = (args[i] + '_')
+        search_term += (args[i] + '_')
     await client.say('https://en.wikipedia.org/w/index.php?search=' + search_term)
     
     
@@ -262,10 +279,8 @@ async def letter(ctx):
     '''
     Generate random letter a-z
     '''
-    letter_num = random.randint(1,26)
-    letters={1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',
-    11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
-    await client.say(letters[letter_num].upper())
+    letterNum = random.randint(65,90)
+    await client.say(makeBottyString(chr(letterNum)))
     
     
 #based on dnd based rolling, arg1 is number of die, arg2 is value of die (d-6, d-20), and optional arg3 is the modifier
@@ -308,20 +323,20 @@ async def dnd(ctx, *args): #"borrows" idea from roll20
             if rollsList[0] < rollsList[1]:
                 rolls_total = rollsList[1]
             else:
-                rolls_total  =  rollsList[0]
+                rolls_total = rollsList[0]
             await client.say(ctx.message.author.mention + ', Your rolls are: ' + rollsDisplay(rollsList)
             + ', and your final roll is: ' + str(rolls_total + bonus))
     else:
         for i in range(0,argsCopy[0]):
             rollsList.append(random.randint(1,argsCopy[1]))
         for i in rollsList:
-            rolls_total  + = i
+            rolls_total += i
         await client.say(ctx.message.author.mention + ', Your rolls are: ' + rollsDisplay(rollsList)
         + ', and your final roll is: ' + str(rolls_total + bonus))
         
     
     
-@client.command(pass_context  =  True)
+@client.command(pass_context = True)
 async def exp(ctx, *args):
     '''
     Gives daily exp and keeps track of arbitray levels
@@ -338,15 +353,15 @@ async def exp(ctx, *args):
             expDict[authorString][2] = time.localtime()[7]
             addedExp = random.randint(1,100)
             await client.say(ctx.message.author.mention  + ', you have gained ' + str(addedExp) + ' exp for today.')
-            expDict[authorString][1]  + = addedExp
+            expDict[authorString][1] += addedExp
             dictWrite(expDict,"exp")
         else:
             await client.say(ctx.message.author.mention + ', Your level is ' + str(expDict[authorString][0])
             + ' and you have ' + str(expDict[authorString][1]) + ' exp.')
         while (10 * expDict[authorString][0] + 1) < expDict[authorString][1]:
-            expDict  =  dictRead("exp")
+            expDict = dictRead("exp")
             expDict[authorString][1] -= (10 * expDict[authorString][0] + 1)
-            expDict[authorString][0]  + = 1
+            expDict[authorString][0]  += 1
             await client.say(ctx.message.author.mention + ', you have leveled up! Your new level is ' 
             + str(expDict[authorString][0]) + ' and you have ' + str(expDict[authorString][1]) + ' exp.')
             dictWrite(expDict,"exp")
@@ -356,7 +371,7 @@ async def exp(ctx, *args):
 async def on_ready():  #displays ready
     print("Bot Online!")
     global emojiList
-    emojiList  =  client.get_all_emojis()
-    emojiList  =  list(emojiList)
+    emojiList = client.get_all_emojis()
+    emojiList = list(emojiList)
     
 client.run(botToken) #client botToken
