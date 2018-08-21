@@ -1,5 +1,5 @@
 # LuLbot
-meme-based python discord bot
+practice python discord bot
 
 Requirements:
 
