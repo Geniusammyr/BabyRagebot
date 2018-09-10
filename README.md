@@ -1,4 +1,4 @@
-# LuLbot
+# Practice Bot
 practice python discord bot
 
 Requirements:
