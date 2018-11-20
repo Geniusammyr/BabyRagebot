@@ -148,19 +148,7 @@ async def roll(self, number: int): #simple display of randint rolling
     '''
     rolled = random.randint(0, number)
     await client.say(makeBottyString("You rolled a " + str(rolled)))
-    
-#todo remove
-@client.command(pass_context = True)
-async def fortNite(self): #simple display of randint rolling
-    '''
-    Roll a number between 0 and your inputted number Ex: (command)roll 20
-    '''
-    rolled = random.randint(1, 10)
-    letter = random.randint(65,74)
- 
-    await client.say(makeBottyString("You rolled a " + str(rolled) + " and " + str(chr(letter))))
-
-    
+   
 #roll a random number between arg1 and arg2
 @client.command(pass_context = True)
 async def rollz(self, number1:int,number2:int):
