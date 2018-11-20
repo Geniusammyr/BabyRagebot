@@ -333,39 +333,6 @@ async def dnd(ctx, *args): #"borrows" idea from roll20
             rolls_total += i
         await client.say(ctx.message.author.mention + ', Your rolls are: ' + rollsDisplay(rollsList)
         + ', and your final roll is: ' + str(rolls_total + bonus))
-        
-    
-    
-@client.command(pass_context = True)
-async def exp(ctx, *args):
-    '''
-    Gives daily exp and keeps track of arbitray levels
-    '''
-    authorString = str(ctx.message.author)
-    expDict = dictRead("exp")
-    if authorString not in expDict.keys(): #create a new user in dict if not in dict
-        expDict.update({authorString:[1,0,366]})
-        await client.say(ctx.message.author.mention + ', a new account has been made for your power level, try again')
-        dictWrite(expDict,"exp")
-        return None
-    else: 
-        if expDict[authorString][2] != time.localtime()[7]:
-            expDict[authorString][2] = time.localtime()[7]
-            addedExp = random.randint(1,100)
-            await client.say(ctx.message.author.mention  + ', you have gained ' + str(addedExp) + ' exp for today.')
-            expDict[authorString][1] += addedExp
-            dictWrite(expDict,"exp")
-        else:
-            await client.say(ctx.message.author.mention + ', Your level is ' + str(expDict[authorString][0])
-            + ' and you have ' + str(expDict[authorString][1]) + ' exp.')
-        while (10 * expDict[authorString][0] + 1) < expDict[authorString][1]:
-            expDict = dictRead("exp")
-            expDict[authorString][1] -= (10 * expDict[authorString][0] + 1)
-            expDict[authorString][0]  += 1
-            await client.say(ctx.message.author.mention + ', you have leveled up! Your new level is ' 
-            + str(expDict[authorString][0]) + ' and you have ' + str(expDict[authorString][1]) + ' exp.')
-            dictWrite(expDict,"exp")
-
             
 @client.event
 async def on_ready():  #displays ready
