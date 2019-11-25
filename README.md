@@ -4,8 +4,11 @@ practice python discord bot
 Requirements:
 
 -python 3, https://www.python.org/
+
 -pip
+
 -discord.py v0.16.12
+
 -discord bot user
 
 
