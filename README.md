@@ -4,11 +4,17 @@ practice python discord bot
 Requirements:
 
 -python 3, https://www.python.org/
+-pip
+-discord.py v0.16.12
+-discord bot user
+
+
+Additional Help:
 
 -python file path added to enviroment variables https://superuser.com/questions/143119/how-to-add-python-to-the-windows-path
 
 -download and install discord.py https://github.com/Rapptz/discord.py, download the file, then open cmd and type:
-python -m pip install -U discord.py
+python3 -m pip install discord.py==v0.16.12
 
 -notepad++ https://notepad-plus-plus.org/ or sublime text https://www.sublimetext.com/ as code editors(for the enclined) are highly recommended
 
